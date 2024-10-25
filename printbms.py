@@ -122,8 +122,13 @@ def readBMS(fileObj):
                     voltage = struct.unpack_from('>H', data, bytecount + 12)[0]/100                                         
                     print("Battery voltage: ", voltage, "V")                                                                
                                                                                                                             
-                    # Current                                                                                               
-                    current = struct.unpack_from('>H', data, bytecount + 15)[0]/100                                         
+                    # Current (it will show - values when the bms is charging)
+                    unsigned_current = struct.unpack_from('>H', data, bytecount + 15)[0]
+                    current = unsigned_current / 100
+
+                    if unsigned_current > 32767:
+                        current = (32767 - unsigned_current) / 100
+                                    
                     print("Current: ", current, "A")                                                                        
                                                                                                                             
                     # Remaining capacity, %                                                                                 
